@@ -10,10 +10,10 @@
   </parent>
 
   <groupId>org.apache.storm</groupId>
-  <artifactId>time_series_similarity_search</artifactId>
+  <artifactId>TS_Search</artifactId>
   <packaging>jar</packaging>
 
-  <name>time_series_similarity_search</name>
+  <name>TS_Search</name>
 
 
   <dependencies>
