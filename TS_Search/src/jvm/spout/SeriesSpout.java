@@ -75,105 +75,105 @@ public class SeriesSpout extends BaseRichSpout {
   @Override
   public void nextTuple() {
 	  
-	    //Utils.sleep(100);
-	     
-	    if(completed){  
-        try {  
-            Thread.sleep(1000);  
-        } catch (InterruptedException e) {  
-            //Do nothing  
-        }  
-            return;  
-        }  	  
-	  
-	    String str;   
-	    
-	    while(data.size() < this.size - 1)
-	    {
-			try {
-					str = dataBufferedReader.readLine();
-					
-				    trace("***********("+readIndex+") Read string is :***********" + str);
-				    
-				    if(str != null)
-				    {
-					    data.add(Double.parseDouble(str));
-					        
-				    	double temp = data.get(newValueIndex);
-				    		
-				    	//trace("***********("+readIndex+") Retrieve number is :***********"+ temp);					 
-					    
-				    	this.ex += temp;
-				    	this.ex2 += temp * temp;	
-
-					    newValueIndex++;
-				    	readIndex++;				    	
-				    	
-				    }	    					
-
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	//Utils.sleep(100);
+		
+	if(completed){  
+		try {  
+			Thread.sleep(1000);  
+		} catch (InterruptedException e) {  
+			//Do nothing  
+		}  
+		return;  
+	}  	  
 	
-	    }
-	    
-	    if(data.size() >= this.size - 1)
-	    {
-	    	
-	    	
-			try {
-					str = dataBufferedReader.readLine();
-					trace("***********("+readIndex+") Read string is :***********" + str);	    
+	String str;   
+	
+	while(data.size() < this.size - 1)
+	{
+		try {
+				str = dataBufferedReader.readLine();
+				
+				trace("***********("+readIndex+") Read string is :***********" + str);
+				
+				if(str != null)
+				{
+					data.add(Double.parseDouble(str));
+						
+					double temp = data.get(newValueIndex);
+						
+					//trace("***********("+readIndex+") Retrieve number is :***********"+ temp);					 
 					
-				    if(str != null)
-				    {
-					    data.add(Double.parseDouble(str));
-					    //trace("***********("+readIndex+") Retrieve number is :***********"+ temp);
-					    
-					    // calculate mean and std of this series
-					    double mean = 0.0, std = 0.0;
-				    	double temp = data.get(newValueIndex);
-				    	
-				    	this.ex += temp;
-				    	this.ex2 += temp * temp;
-					    
-					    mean = this.ex / this.size;
-					    std = this.ex2 / this.size;
-					    std = Math.sqrt(std - mean * mean);
-					    
-					    
-					    // emit essential data to next bolt
-					    str = data.toString();
-					  					    
-				    	Values values = new Values(str, mean, std, seriesLoc);
-				    	UUID msgId = UUID.randomUUID();
-				    	this.pending.put(msgId, values);				
-				    	this.collector.emit(values, msgId);  
-				    	
-				    	
-				    	// remove first point in this series, as well as its cumulative values
-				    	temp = data.get(REMOVEINDEX);
-				    	this.ex -= temp;
-				    	this.ex2 -= temp * temp;
-				    	data.remove(REMOVEINDEX);
-				    	
-				    	readIndex++;	
-				    	seriesLoc++;
-				    }
-				    else
-				    {
-				    	completed = true;
-				    }
+					this.ex += temp;
+					this.ex2 += temp * temp;	
 
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					newValueIndex++;
+					readIndex++;				    	
+					
+				}	    					
+
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	if(data.size() >= this.size - 1)
+	{
+		
+		
+		try {
+				str = dataBufferedReader.readLine();
+				trace("***********("+readIndex+") Read string is :***********" + str);	    
+				
+				if(str != null)
+				{
+					data.add(Double.parseDouble(str));
+					//trace("***********("+readIndex+") Retrieve number is :***********"+ temp);
+					
+					// calculate mean and std of this series
+					double mean = 0.0, std = 0.0;
+					double temp = data.get(newValueIndex);
+					
+					this.ex += temp;
+					this.ex2 += temp * temp;
+					
+					mean = this.ex / this.size;
+					std = this.ex2 / this.size;
+					std = Math.sqrt(std - mean * mean);
+					
+					
+					// emit essential data to next bolt
+					str = data.toString();
+										
+					Values values = new Values(str, mean, std, seriesLoc);
+					UUID msgId = UUID.randomUUID();
+					this.pending.put(msgId, values);				
+					this.collector.emit(values, msgId);  
+					
+					
+					// remove first point in this series, as well as its cumulative values
+					temp = data.get(REMOVEINDEX);
+					this.ex -= temp;
+					this.ex2 -= temp * temp;
+					data.remove(REMOVEINDEX);
+					
+					readIndex++;	
+					seriesLoc++;
+				}
+				else
+				{
+					completed = true;
 				}
 
-	    	
-	    }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
 	    
   }
  
