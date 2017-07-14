@@ -1,4 +1,4 @@
-# TS_Search_Storm
+# ucrdtw_storm
 
 A Storm implementation of a time series similarity search algorithm which was introduced in: http://www.cs.ucr.edu/~eamonn/SIGKDD_trillion.pdf
 
